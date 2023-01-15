@@ -11,6 +11,37 @@ body {
   justify-content: center;
 }
 
+#options {
+  position: fixed;
+  top: min(10vh, calc((100% - 562px) / 2));
+  left: min(10vw, calc((100% - 722px) / 2));
+  z-index: 1;
+  width: 80vw;
+  min-width: 722px;
+  min-height: 562px;
+  height: 80vh;
+  padding: 10vw;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+}
+
+h3, button {
+  margin: 0;
+  text-transform: capitalize;
+}
+
+button {
+  cursor: pointer;
+}
+
 canvas {
   border: 1px solid white;
+}
+
+.hidden {
+  display: none !important;
 }

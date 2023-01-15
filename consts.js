@@ -1,5 +1,8 @@
 export const CANVAS = document.getElementById("game");
 export const CONTEXT = CANVAS.getContext("2d");
+export const OPTIONS = document.getElementById("options");
+export const SPEED = document.getElementById("speed");
+export const START = document.getElementById("start");
 export const GRID = 16;
 export const SNAKE = {
   x: 160,

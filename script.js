@@ -1,4 +1,4 @@
-import { CANVAS, CONTEXT, GRID, SNAKE, PREY, GET_RANDOM_INT } from "./consts.js";
+import { CANVAS, CONTEXT, OPTIONS, SPEED, START, GRID, SNAKE, PREY, GET_RANDOM_INT } from "./consts.js";
 
 const requestAnimationFrame =
   window.requestAnimationFrame ||
@@ -10,11 +10,12 @@ const cancelAnimationFrame =
 let count = 0;
 let isPaused = false;
 let frame = null;
+let currentSpeed = 1
 
 function loop() {
   frame = requestAnimationFrame(loop);
 
-  if (++count < 11) {
+  if (++count < 12 - currentSpeed) {
     return;
   }
 
@@ -92,5 +93,13 @@ function controls(e) {
   }
 }
 
+function start() {
+  OPTIONS.classList.add('hidden')
+  frame = requestAnimationFrame(loop);
+}
+
 document.addEventListener("keydown", controls);
-frame = requestAnimationFrame(loop);
+SPEED.addEventListener("change", (e) => {
+  currentSpeed = e.target.value
+});
+START.addEventListener("click", start);
