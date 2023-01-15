@@ -1,8 +1,12 @@
+
+export const SCORE = document.getElementById("score");
 export const CANVAS = document.getElementById("game");
 export const CONTEXT = CANVAS.getContext("2d");
 export const OPTIONS = document.getElementById("options");
 export const SPEED = document.getElementById("speed");
+export const THROUGH = document.getElementById("through");
 export const START = document.getElementById("start");
+export const HINT = document.getElementById("hint");
 export const GRID = 16;
 export const SNAKE = {
   x: 160,
@@ -20,3 +24,14 @@ export const PREY = {
 export const GET_RANDOM_INT = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 };
+
+export function RESTART() {
+  SNAKE.x = 160;
+  SNAKE.y = 160;
+  SNAKE.cells = [];
+  SNAKE.maxCells = 4;
+  SNAKE.dx = GRID;
+  SNAKE.dy = 0;
+  PREY.x = GET_RANDOM_INT(0, 45) * GRID;
+  PREY.y = GET_RANDOM_INT(0, 35) * GRID;
+}

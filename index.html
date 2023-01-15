@@ -8,25 +8,32 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <h3 id="score">Счёт: 0</h3>
     <section id="options">
       <article>
-      <h3>скорость</h3>
-      <select name="speed" value="1" id="speed">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-      </select>
-    </article>
-    <button id="start">начать игру</button>
+        <h3>скорость</h3>
+        <select name="speed" id="speed">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </article>
+      <article>
+        <h3>стены</h3>
+        <select name="through" id="through">
+          <option value="true">насквозь</option>
+          <option value="">ограничено</option>
+        </select>
+      </article>
+      <button id="start">начать игру</button>
     </section>
     <canvas id="game" width="720" height="560"></canvas>
+    <div id="hint" class="hidden">
+      <h3>←↑↓→&nbsp; &nbsp; - &nbsp; &nbsp;Управление</h3>
+      <h3>Пробел&nbsp; &nbsp; - &nbsp; &nbsp;Пауза</h3>
+    </div>
     <script type="module" src="script.js"></script>
   </body>
 </html>

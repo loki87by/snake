@@ -1,4 +1,18 @@
-import { CANVAS, CONTEXT, OPTIONS, SPEED, START, GRID, SNAKE, PREY, GET_RANDOM_INT } from "./consts.js";
+import {
+  SCORE,
+  CANVAS,
+  CONTEXT,
+  OPTIONS,
+  SPEED,
+  THROUGH,
+  START,
+  HINT,
+  GRID,
+  SNAKE,
+  PREY,
+  GET_RANDOM_INT,
+  RESTART,
+} from "./consts.js";
 
 const requestAnimationFrame =
   window.requestAnimationFrame ||
@@ -8,14 +22,27 @@ const requestAnimationFrame =
 const cancelAnimationFrame =
   window.cancelAnimationFrame || window.mozCancelAnimationFrame;
 let count = 0;
+let score = 0;
+let timestamp = 0;
+let currentSpeed = 1;
+let through = true;
 let isPaused = false;
 let frame = null;
-let currentSpeed = 1
+
+function changeThrough(e) {
+  const value = Boolean(e.target.value);
+  if (value) {
+    CANVAS.classList.remove("through");
+  } else {
+    CANVAS.classList.add("through");
+  }
+  through = value;
+}
 
 function loop() {
   frame = requestAnimationFrame(loop);
 
-  if (++count < 12 - currentSpeed) {
+  if (++count < 6 - currentSpeed) {
     return;
   }
 
@@ -24,17 +51,30 @@ function loop() {
   SNAKE.x += SNAKE.dx;
   SNAKE.y += SNAKE.dy;
 
-  if (SNAKE.x < 0) {
-    SNAKE.x = CANVAS.width - GRID;
-  } else if (SNAKE.x >= CANVAS.width) {
-    SNAKE.x = 0;
+  if (through) {
+    if (SNAKE.x < 0) {
+      SNAKE.x = CANVAS.width - GRID;
+    } else if (SNAKE.x >= CANVAS.width) {
+      SNAKE.x = 0;
+    }
+
+    if (SNAKE.y < 0) {
+      SNAKE.y = CANVAS.height - GRID;
+    } else if (SNAKE.y >= CANVAS.height) {
+      SNAKE.y = 0;
+    }
+  } else {
+    if (
+      SNAKE.x < 0 ||
+      SNAKE.x >= CANVAS.width ||
+      SNAKE.y >= CANVAS.height ||
+      SNAKE.y < 0
+    ) {
+      RESTART();
+      score = 0;
+    }
   }
 
-  if (SNAKE.y < 0) {
-    SNAKE.y = CANVAS.height - GRID;
-  } else if (SNAKE.y >= CANVAS.height) {
-    SNAKE.y = 0;
-  }
   SNAKE.cells.unshift({ x: SNAKE.x, y: SNAKE.y });
   if (SNAKE.cells.length > SNAKE.maxCells) {
     SNAKE.cells.pop();
@@ -47,20 +87,16 @@ function loop() {
 
     if (cell.x === PREY.x && cell.y === PREY.y) {
       SNAKE.maxCells++;
+      score++;
+      SCORE.textContent = "Счёт: " + score;
       PREY.x = GET_RANDOM_INT(0, 45) * GRID;
       PREY.y = GET_RANDOM_INT(0, 35) * GRID;
     }
 
     for (let i = index + 1; i < SNAKE.cells.length; i++) {
       if (cell.x === SNAKE.cells[i].x && cell.y === SNAKE.cells[i].y) {
-        SNAKE.x = 160;
-        SNAKE.y = 160;
-        SNAKE.cells = [];
-        SNAKE.maxCells = 4;
-        SNAKE.dx = GRID;
-        SNAKE.dy = 0;
-        PREY.x = GET_RANDOM_INT(0, 45) * GRID;
-        PREY.y = GET_RANDOM_INT(0, 35) * GRID;
+        RESTART();
+        score = 0;
       }
     }
   });
@@ -76,6 +112,11 @@ function paused() {
 }
 
 function controls(e) {
+  if (e.timeStamp <= timestamp + 10) {
+    return;
+  }
+  timestamp = e.timeStamp;
+  
   if (e.key === "ArrowLeft" && SNAKE.dx === 0) {
     SNAKE.dx = -GRID;
     SNAKE.dy = 0;
@@ -94,12 +135,15 @@ function controls(e) {
 }
 
 function start() {
-  OPTIONS.classList.add('hidden')
+  OPTIONS.classList.add("hidden");
   frame = requestAnimationFrame(loop);
+  HINT.classList.remove("hidden");
 }
 
 document.addEventListener("keydown", controls);
 SPEED.addEventListener("change", (e) => {
-  currentSpeed = e.target.value
+  console.log(frame)
+  currentSpeed = e.target.value;
 });
+THROUGH.addEventListener("change", changeThrough);
 START.addEventListener("click", start);
