@@ -4,6 +4,8 @@ export default class Snake {
   constructor(x, y) {
     this.x = x || 160;
     this.y = y || 160;
+    this.startX = x || 160;
+    this.startY = y || 160;
     this.dx = GRID;
     this.dy = 0;
     this.cells = [];
@@ -55,14 +57,18 @@ export default class Snake {
     this.dy = dy;
   }
 
+  gameOver(x, y) {
+    this.x = x || this.startX;
+    this.y = y || this.startY;
+    this.cells = [];
+    this.maxCells = 4;
+    this.dx = GRID;
+    this.dy = 0;
+  }
+
   checkGameOver(i, x, y) {
     if (x === this.cells[i].x && y === this.cells[i].y) {
-      this.x = 160;
-      this.y = 160;
-      this.cells = [];
-      this.maxCells = 4;
-      this.dx = GRID;
-      this.dy = 0;
+      this.gameOver();
       return true;
     }
   }

@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <section class="score">
     <h3 id="score">Счёт: 0</h3>
+    <h3  class="hidden" id="score2">Счёт (игрок 2): 0</h3>
+  </section>
     <section id="options">
       <article>
         <h3>скорость</h3>
@@ -27,12 +30,20 @@
           <option value="">ограничено</option>
         </select>
       </article>
+      <article>
+        <h3>игроки</h3>
+        <select name="players" id="players">
+          <option value="">один игрок</option>
+          <option value="true">два игрока</option>
+        </select>
+      </article>
       <button id="start">начать игру</button>
     </section>
     <canvas id="game" width="720" height="560"></canvas>
     <div id="hint" class="hidden">
       <h3>←↑↓→&nbsp; &nbsp; - &nbsp; &nbsp;Управление</h3>
       <h3>Пробел&nbsp; &nbsp; - &nbsp; &nbsp;Пауза</h3>
+      <h3 class="hidden">awsd&nbsp; &nbsp; - &nbsp; &nbsp;Управление (игрок 2)</h3>
     </div>
     <script type="module" src="script.js"></script>
   </body>

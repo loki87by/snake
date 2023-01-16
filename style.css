@@ -12,7 +12,16 @@ body {
   justify-content: center;
 }
 
+.score,
+#hint {
+  width: 722px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
 #score,
+#score2,
 #hint > h3 {
   font-size: 1.2em;
   color: #fff;
@@ -56,13 +65,6 @@ canvas {
 
 .through {
   border: 1px solid #f00;
-}
-
-#hint {
-  width: 722px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
 }
 
 .hidden {
