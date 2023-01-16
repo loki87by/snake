@@ -8,11 +8,11 @@ import {
   START,
   HINT,
   GRID,
-  SNAKE,
   PREY,
   GET_RANDOM_INT,
-  RESTART,
 } from "./consts.js";
+
+import Snake from "./Snake.js";
 
 const requestAnimationFrame =
   window.requestAnimationFrame ||
@@ -28,6 +28,7 @@ let currentSpeed = 1;
 let through = true;
 let isPaused = false;
 let frame = null;
+const snake = new Snake();
 
 function changeThrough(e) {
   const value = Boolean(e.target.value);
@@ -39,6 +40,11 @@ function changeThrough(e) {
   through = value;
 }
 
+function newPrey() {
+  PREY.x = GET_RANDOM_INT(0, 45) * GRID;
+  PREY.y = GET_RANDOM_INT(0, 35) * GRID;
+}
+
 function loop() {
   frame = requestAnimationFrame(loop);
 
@@ -48,54 +54,40 @@ function loop() {
 
   count = 0;
   CONTEXT.clearRect(0, 0, CANVAS.width, CANVAS.height);
-  SNAKE.x += SNAKE.dx;
-  SNAKE.y += SNAKE.dy;
-
+  snake.step();
   if (through) {
-    if (SNAKE.x < 0) {
-      SNAKE.x = CANVAS.width - GRID;
-    } else if (SNAKE.x >= CANVAS.width) {
-      SNAKE.x = 0;
-    }
-
-    if (SNAKE.y < 0) {
-      SNAKE.y = CANVAS.height - GRID;
-    } else if (SNAKE.y >= CANVAS.height) {
-      SNAKE.y = 0;
-    }
+    snake.checkWall();
   } else {
+    const data = snake.getData();
     if (
-      SNAKE.x < 0 ||
-      SNAKE.x >= CANVAS.width ||
-      SNAKE.y >= CANVAS.height ||
-      SNAKE.y < 0
+      data.x < 0 ||
+      data.x >= CANVAS.width ||
+      data.y >= CANVAS.height ||
+      data.y < 0
     ) {
-      RESTART();
+      newPrey();
       score = 0;
     }
   }
 
-  SNAKE.cells.unshift({ x: SNAKE.x, y: SNAKE.y });
-  if (SNAKE.cells.length > SNAKE.maxCells) {
-    SNAKE.cells.pop();
-  }
+  snake.moving();
   CONTEXT.fillStyle = "red";
   CONTEXT.fillRect(PREY.x, PREY.y, GRID - 1, GRID - 1);
   CONTEXT.fillStyle = "green";
-  SNAKE.cells.forEach(function (cell, index) {
+  snake.getData().cells.forEach(function (cell, index) {
     CONTEXT.fillRect(cell.x, cell.y, GRID - 1, GRID - 1);
 
     if (cell.x === PREY.x && cell.y === PREY.y) {
-      SNAKE.maxCells++;
       score++;
       SCORE.textContent = "Счёт: " + score;
       PREY.x = GET_RANDOM_INT(0, 45) * GRID;
       PREY.y = GET_RANDOM_INT(0, 35) * GRID;
+      snake.increase();
     }
 
-    for (let i = index + 1; i < SNAKE.cells.length; i++) {
-      if (cell.x === SNAKE.cells[i].x && cell.y === SNAKE.cells[i].y) {
-        RESTART();
+    for (let i = index + 1; i < snake.getData().cells.length; i++) {
+      if (snake.checkGameOver(i, cell.x, cell.y)) {
+        newPrey();
         score = 0;
       }
     }
@@ -116,19 +108,15 @@ function controls(e) {
     return;
   }
   timestamp = e.timeStamp;
-  
-  if (e.key === "ArrowLeft" && SNAKE.dx === 0) {
-    SNAKE.dx = -GRID;
-    SNAKE.dy = 0;
-  } else if (e.key === "ArrowUp" && SNAKE.dy === 0) {
-    SNAKE.dy = -GRID;
-    SNAKE.dx = 0;
-  } else if (e.key === "ArrowRight" && SNAKE.dx === 0) {
-    SNAKE.dx = GRID;
-    SNAKE.dy = 0;
-  } else if (e.key === "ArrowDown" && SNAKE.dy === 0) {
-    SNAKE.dy = GRID;
-    SNAKE.dx = 0;
+
+  if (e.key === "ArrowLeft" && snake.getData().dx === 0) {
+    snake.movement(-GRID, 0);
+  } else if (e.key === "ArrowUp" && snake.getData().dy === 0) {
+    snake.movement(0, -GRID);
+  } else if (e.key === "ArrowRight" && snake.getData().dx === 0) {
+    snake.movement(GRID, 0);
+  } else if (e.key === "ArrowDown" && snake.getData().dy === 0) {
+    snake.movement(0, GRID);
   } else if (e.key === " ") {
     paused();
   }
@@ -142,7 +130,6 @@ function start() {
 
 document.addEventListener("keydown", controls);
 SPEED.addEventListener("change", (e) => {
-  console.log(frame)
   currentSpeed = e.target.value;
 });
 THROUGH.addEventListener("change", changeThrough);
