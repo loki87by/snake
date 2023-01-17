@@ -32,8 +32,11 @@ let currentSpeed = 1;
 let through = true;
 let isPaused = false;
 let multiple = false;
+let isSomeDead = false;
 let frame = null;
 let secondPlayer = null;
+let timer = null;
+let bones = [];
 const snake = new Snake();
 
 function changeThrough(e) {
@@ -119,23 +122,51 @@ function loop() {
     obj.getData().cells.forEach(function (cell, index) {
       CONTEXT.fillRect(cell.x, cell.y, GRID - 1, GRID - 1);
 
-      if (cell.x === PREY.x && cell.y === PREY.y) {
-        if (ind === 1) {
-          score++;
-          scoreSelector.textContent = `Счёт: ${score}`;
+      function feeding(x, y, isPrey) {
+        if (cell.x === x && cell.y === y) {
+          if (ind === 1) {
+            score++;
+            scoreSelector.textContent = `Счёт: ${score}`;
 
-          if (multiple) {
-            scoreSelector.textContent = `Счёт (игрок 1): ${score}`;
+            if (multiple) {
+              scoreSelector.textContent = `Счёт (игрок 1): ${score}`;
+            }
           }
-        }
 
-        if (ind === 2) {
-          score2++;
-          scoreSelector.textContent = `Счёт (игрок 2): ${score2}`;
+          if (ind === 2) {
+            score2++;
+            scoreSelector.textContent = `Счёт (игрок 2): ${score2}`;
+          }
+
+          if (isPrey) {
+            PREY.x = GET_RANDOM_INT(0, 45) * GRID;
+            PREY.y = GET_RANDOM_INT(0, 35) * GRID;
+          } else {
+            if (!isSomeDead) {
+              const eatedBone = bones.findIndex(
+                (i) => i.x === cell.x && i.y === cell.y
+              );
+              bones = [
+                ...bones.slice(0, eatedBone),
+                ...bones.slice(eatedBone + 1),
+              ];
+            }
+          }
+          obj.increase();
         }
-        PREY.x = GET_RANDOM_INT(0, 45) * GRID;
-        PREY.y = GET_RANDOM_INT(0, 35) * GRID;
-        obj.increase();
+      }
+
+      function resurrection() {
+        isSomeDead = false;
+        clearTimeout(timer);
+        timer = null;
+      }
+
+      feeding(PREY.x, PREY.y, true);
+      if (bones.length > 0) {
+        bones.forEach((i) => {
+          feeding(i.x, i.y);
+        });
       }
 
       for (let i = index + 1; i < obj.getData().cells.length; i++) {
@@ -165,7 +196,31 @@ function loop() {
             obj.getData().cells[0].x === cell2.x &&
             obj.getData().cells[0].y === cell2.y
           ) {
-            obj.gameOver(720 - cell2.x, 560 - cell2.y);
+            const preBones = obj.gameOver(720 - cell2.x, 560 - cell2.y);
+            isSomeDead = true;
+            timer = setTimeout(resurrection, 500);
+            const preBones2 = preBones
+              .map((bone) => {
+                if (
+                  !obj
+                    .getData()
+                    .cells.some((i) => i.x === bone.x && i.y === bone.y)
+                ) {
+                  return bone;
+                }
+              })
+              .filter((i) => i !== undefined);
+            bones = preBones2
+              .map((bone) => {
+                if (
+                  !secondSnake
+                    .getData()
+                    .cells.some((i) => i.x === bone.x && i.y === bone.y)
+                ) {
+                  return bone;
+                }
+              })
+              .filter((i) => i !== undefined);
 
             if (ind === 1) {
               score = 0;
@@ -195,6 +250,12 @@ function loop() {
     step(snake, SCORE, 1, secondPlayer);
     CONTEXT.fillStyle = "yellow";
     step(secondPlayer, SCORE2, 2, snake);
+    if (bones.length > 0) {
+      CONTEXT.fillStyle = "red";
+      bones.forEach((i) => {
+        CONTEXT.fillRect(i.x, i.y, GRID - 1, GRID - 1);
+      });
+    }
   }
 }
 
@@ -212,7 +273,7 @@ function controls(e) {
     paused();
   }
 
-  if (e.timeStamp > timestamp + 10) {
+  if (e.timeStamp > timestamp + 50) {
     timestamp = e.timeStamp;
 
     if (e.key === "ArrowLeft" && snake.getData().dx === 0) {
@@ -226,16 +287,16 @@ function controls(e) {
     }
   }
 
-  if (multiple && e.timeStamp > timestamp2 + 10) {
+  if (multiple && e.timeStamp > timestamp2 + 50) {
     timestamp2 = e.timeStamp;
 
-    if (e.key === "a" && secondPlayer.getData().dx === 0) {
+    if (e.code === "KeyA" && secondPlayer.getData().dx === 0) {
       secondPlayer.movement(-GRID, 0);
-    } else if (e.key === "w" && secondPlayer.getData().dy === 0) {
+    } else if (e.code === "KeyW" && secondPlayer.getData().dy === 0) {
       secondPlayer.movement(0, -GRID);
-    } else if (e.key === "d" && secondPlayer.getData().dx === 0) {
+    } else if (e.code === "KeyD" && secondPlayer.getData().dx === 0) {
       secondPlayer.movement(GRID, 0);
-    } else if (e.key === "s" && secondPlayer.getData().dy === 0) {
+    } else if (e.code === "KeyS" && secondPlayer.getData().dy === 0) {
       secondPlayer.movement(0, GRID);
     }
   }

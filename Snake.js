@@ -58,12 +58,18 @@ export default class Snake {
   }
 
   gameOver(x, y) {
+    const bones = this.cells.map((i, ind) => {
+      if ((ind + 1) % 3 === 0) {
+        return i
+      }
+    }).filter(it => it !== undefined)
     this.x = x || this.startX;
     this.y = y || this.startY;
     this.cells = [];
     this.maxCells = 4;
     this.dx = GRID;
     this.dy = 0;
+    return bones
   }
 
   checkGameOver(i, x, y) {
