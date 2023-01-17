@@ -11,7 +11,9 @@ import {
   HINT,
   GRID,
   PREY,
-  GET_RANDOM_INT,
+  CHANGE_THROUGH,
+  CHANGE_PLAYERS,
+  NEW_PREY,
 } from "./consts.js";
 
 import Snake from "./Snake.js";
@@ -41,11 +43,7 @@ const snake = new Snake();
 
 function changeThrough(e) {
   const value = Boolean(e.target.value);
-  if (value) {
-    CANVAS.classList.remove("through");
-  } else {
-    CANVAS.classList.add("through");
-  }
+  CHANGE_THROUGH(value);
   through = value;
 }
 
@@ -55,20 +53,10 @@ function changePlayers(e) {
 
   if (value) {
     secondPlayer = new Snake(560, 400);
-    SCORE.textContent = "Счёт (игрок 1): 0";
-    SCORE2.classList.remove("hidden");
-    HINT.children[2].classList.remove("hidden");
   } else {
     secondPlayer = null;
-    SCORE.textContent = "Счёт: 0";
-    SCORE2.classList.add("hidden");
-    HINT.children[2].classList.add("hidden");
   }
-}
-
-function newPrey() {
-  PREY.x = GET_RANDOM_INT(0, 45) * GRID;
-  PREY.y = GET_RANDOM_INT(0, 35) * GRID;
+  CHANGE_PLAYERS(value);
 }
 
 function loop() {
@@ -94,25 +82,27 @@ function loop() {
     }
   } else {
     const data = snake.getData();
+
     if (
       data.x < 0 ||
       data.x >= CANVAS.width ||
       data.y >= CANVAS.height ||
       data.y < 0
     ) {
-      newPrey();
+      NEW_PREY();
       score = 0;
     }
 
     if (multiple) {
       const data = secondPlayer.getData();
+
       if (
         data.x < 0 ||
         data.x >= CANVAS.width ||
         data.y >= CANVAS.height ||
         data.y < 0
       ) {
-        newPrey();
+        NEW_PREY();
         score2 = 0;
       }
     }
@@ -139,8 +129,7 @@ function loop() {
           }
 
           if (isPrey) {
-            PREY.x = GET_RANDOM_INT(0, 45) * GRID;
-            PREY.y = GET_RANDOM_INT(0, 35) * GRID;
+            NEW_PREY();
           } else {
             if (!isSomeDead) {
               const eatedBone = bones.findIndex(
@@ -163,6 +152,7 @@ function loop() {
       }
 
       feeding(PREY.x, PREY.y, true);
+
       if (bones.length > 0) {
         bones.forEach((i) => {
           feeding(i.x, i.y);
@@ -171,7 +161,7 @@ function loop() {
 
       for (let i = index + 1; i < obj.getData().cells.length; i++) {
         if (obj.checkGameOver(i, cell.x, cell.y)) {
-          newPrey();
+          NEW_PREY();
 
           if (ind === 1) {
             score = 0;
@@ -244,12 +234,14 @@ function loop() {
   CONTEXT.fillStyle = "red";
   CONTEXT.fillRect(PREY.x, PREY.y, GRID - 1, GRID - 1);
   CONTEXT.fillStyle = "green";
+
   if (!multiple) {
     step(snake, SCORE, 1);
   } else {
     step(snake, SCORE, 1, secondPlayer);
     CONTEXT.fillStyle = "yellow";
     step(secondPlayer, SCORE2, 2, snake);
+
     if (bones.length > 0) {
       CONTEXT.fillStyle = "red";
       bones.forEach((i) => {
