@@ -7,6 +7,7 @@ import {
   SPEED,
   THROUGH,
   PLAYERS,
+  PLAYERS_INFO,
   START,
   HINT,
   GRID,
@@ -42,7 +43,7 @@ let bones = [];
 const snake = new Snake();
 
 function changeThrough(e) {
-  const value = Boolean(e.target.value);
+  const value = e.target.checked;
   CHANGE_THROUGH(value);
   through = value;
 }
@@ -53,8 +54,10 @@ function changePlayers(e) {
 
   if (value) {
     secondPlayer = new Snake(560, 400);
+    PLAYERS_INFO.removeAttribute("style");
   } else {
     secondPlayer = null;
+    PLAYERS_INFO.setAttribute("style", "opacity: 0");
   }
   CHANGE_PLAYERS(value);
 }
@@ -305,5 +308,8 @@ SPEED.addEventListener("change", (e) => {
   currentSpeed = e.target.value;
 });
 THROUGH.addEventListener("change", changeThrough);
-PLAYERS.addEventListener("change", changePlayers);
+PLAYERS.forEach((i) => i.addEventListener("change", changePlayers));
 START.addEventListener("click", start);
+window.addEventListener("beforeunload", () => {
+  cancelAnimationFrame(frame);
+});

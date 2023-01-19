@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/assets/snake.ico" />
     <link rel="stylesheet" href="normalize.css" />
     <link rel="stylesheet" href="style.css" />
+    <title>Классическая игра в змейку</title>
   </head>
   <body>
     <section class="score">
-    <h3 id="score">Счёт: 0</h3>
-    <h3  class="hidden" id="score2">Счёт (игрок 2): 0</h3>
-  </section>
+      <h3 id="score">Счёт: 0</h3>
+      <h3 class="hidden" id="score2">Счёт (игрок 2): 0</h3>
+    </section>
     <section id="options">
       <article>
         <h3>скорость</h3>
@@ -24,26 +26,41 @@
         </select>
       </article>
       <article>
-        <h3>стены</h3>
-        <select name="through" id="through">
-          <option value="true">насквозь</option>
-          <option value="">ограничено</option>
-        </select>
+        <label for="through">стены</label>
+        <input type="checkbox" name="through" id="through" />
+        <img
+          src="./assets/question.svg"
+          alt="info"
+          title="При включенной опции змея при столкновением со стеной погибает"
+        />
       </article>
-      <article>
-        <h3>игроки</h3>
-        <select name="players" id="players">
-          <option value="">один игрок</option>
-          <option value="true">два игрока</option>
-        </select>
-      </article>
+      <div class="players_info">
+        <article>
+          <input
+            type="radio"
+            id="singlePlayer"
+            name="players"
+            value=""
+            checked
+          />
+          <label for="singlePlayer">один игрок</label>
+          <input type="radio" id="multyPlayer" name="players" value="true" />
+          <label for="multyPlayer">два игрока</label>
+        </article>
+        <h4 id="playersInfo" style="opacity: 0">
+          Врезаясь в другую змейку начинаете с меньшей длиной и соответственно
+          меньшим количеством очков
+        </h4>
+      </div>
       <button id="start">начать игру</button>
     </section>
     <canvas id="game" width="720" height="560"></canvas>
     <div id="hint" class="hidden">
       <h3>←↑↓→&nbsp; &nbsp; - &nbsp; &nbsp;Управление</h3>
       <h3>Пробел&nbsp; &nbsp; - &nbsp; &nbsp;Пауза</h3>
-      <h3 class="hidden">awsd&nbsp; &nbsp; - &nbsp; &nbsp;Управление (игрок 2)</h3>
+      <h3 class="hidden">
+        awsd&nbsp; &nbsp; - &nbsp; &nbsp;Управление (игрок 2)
+      </h3>
     </div>
     <script type="module" src="script.js"></script>
   </body>

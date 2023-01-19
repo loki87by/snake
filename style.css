@@ -6,17 +6,37 @@ body {
 
 body {
   background: black;
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
   justify-content: center;
+}
+
+.score,
+div,
+#options,
+article {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
 
 .score,
 #hint {
   width: 722px;
-  display: flex;
-  align-items: center;
+  -ms-flex-pack: distribute;
   justify-content: space-around;
 }
 
@@ -25,13 +45,6 @@ body {
 #hint > h3 {
   font-size: 1.2em;
   color: #fff;
-}
-
-#options,
-article {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 #options {
@@ -44,15 +57,64 @@ article {
   min-height: calc(562px + 1.2em);
   height: 80vh;
   padding: 10vw;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
   justify-content: space-between;
+  background: no-repeat url("./assets/snake-left.png") 5% 20%,
+    no-repeat url("./assets/snake-right.jpg") right 65%;
+  background-size: 30%;
   background-color: #fff;
 }
 
 h3,
+label,
 button {
-  margin: 0;
+  margin: 0 0.25em;
+  font-size: 1.5em;
+  font-weight: bold;
   text-transform: capitalize;
+}
+
+input,
+img {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+img {
+  margin-left: 0.5em;
+}
+
+#multyPlayer {
+  margin-left: 1em;
+}
+
+.players_info {
+  width: 80%;
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+  padding: 0.25em;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+h4 {
+  margin: 0.5em;
+  font-size: 1.25em;
+  font-style: italic;
+  text-align: center;
+  text-shadow: 1px 1px 1px #696969;
 }
 
 button {

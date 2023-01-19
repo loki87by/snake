@@ -5,7 +5,8 @@ export const CONTEXT = CANVAS.getContext("2d");
 export const OPTIONS = document.getElementById("options");
 export const SPEED = document.getElementById("speed");
 export const THROUGH = document.getElementById("through");
-export const PLAYERS = document.getElementById("players");
+export const PLAYERS = document.getElementsByName("players");
+export const PLAYERS_INFO = document.getElementById("playersInfo");
 export const START = document.getElementById("start");
 export const HINT = document.getElementById("hint");
 export const GRID = 16;
@@ -13,9 +14,11 @@ export const PREY = {
   x: 400,
   y: 400,
 };
+
 const GET_RANDOM_INT = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 };
+
 export function CHANGE_THROUGH(val) {
   if (val) {
     CANVAS.classList.remove("through");
@@ -23,6 +26,7 @@ export function CHANGE_THROUGH(val) {
     CANVAS.classList.add("through");
   }
 }
+
 export function CHANGE_PLAYERS(value) {
   if (value) {
     SCORE.textContent = "Счёт (игрок 1): 0";
@@ -34,6 +38,7 @@ export function CHANGE_PLAYERS(value) {
     HINT.children[2].classList.add("hidden");
   }
 }
+
 export function NEW_PREY() {
   PREY.x = GET_RANDOM_INT(0, 45) * GRID;
   PREY.y = GET_RANDOM_INT(0, 35) * GRID;
