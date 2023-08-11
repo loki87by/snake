@@ -5,4 +5,4 @@
 - выбор скорости
 - выбор наличия / отсутствия стен
 
-[Деплой тут:] (https://loki87by.github.io/snake/)
+[Деплой тут:](https://loki87by.github.io/snake/)
